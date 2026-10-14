@@ -54,3 +54,13 @@ A full backup was taken before any change was made:
 - VZO exhibition details (name, dates, stall, photos)
 - Theme video file / link
 - "Our process – change the number": steps are numbered 01–18 in sequence. Tell me what number should change
+
+## Follow-up fixes (after review)
+- Enquiry page: removed the theme's demo blog sidebar; uses the same footer as other pages.
+- All custom UI (buttons, filters, product cards, enquiry badge) now uses the theme's own button class and colour variables, with square corners.
+- Home "Our Products Range" grid: category tiles restored to the theme's original style (the product-card box styling no longer applies to them). The grid shows 9 popular categories, each with its matching photo.
+- The Fusible Plugs photo was assigned to the Water Level Gauge category; moved it to Fusible Plug.
+- Shop filters ("By Material" / "Used In") were inside a block the theme hides; moved below the sort dropdown.
+- Removed the empty "Cart" and "Tags" widgets from the shop sidebar, and the price/rating sort options.
+- Footer "Subscribe" column was empty because the Mailchimp form was never connected (API key missing). Replaced it with "Get in Touch" and a Contact Us button in all footers.
+- Every page was rendered offline in Chromium at 1440px and 390px and checked visually; the Add to Enquiry → Enquiry page flow was tested in the browser.
