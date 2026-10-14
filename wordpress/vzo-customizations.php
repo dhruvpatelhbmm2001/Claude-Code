@@ -100,9 +100,9 @@ function vzo_enquiry_button( $product, $context = 'loop' ) {
 	if ( 'single' === $context ) {
 		$out .= '<label class="vzo-enq-qty-label">Quantity <input type="number" min="1" value="1" class="vzo-enq-qty" inputmode="numeric"></label>';
 	}
-	$out .= '<button type="button" class="vzo-enq-add" ' . $attrs . '><span class="vzo-enq-add-text">Add to Enquiry</span></button>';
+	$out .= '<button type="button" class="button vzo-enq-add" ' . $attrs . '><span class="vzo-enq-add-text">Add to Enquiry</span></button>';
 	if ( 'loop' === $context ) {
-		$out .= '<a class="vzo-enq-view" href="' . esc_url( get_permalink( $id ) ) . '">View Details</a>';
+		$out .= '<a class="button vzo-enq-view" href="' . esc_url( get_permalink( $id ) ) . '">View Details</a>';
 	}
 	$out .= '</div>';
 	return $out;
@@ -356,7 +356,7 @@ add_shortcode( 'vzo_enquiry', function () {
 				<label class="vzo-full">City / Country<input type="text" name="vzo_city"></label>
 				<label class="vzo-full">Message / Requirements<textarea name="vzo_message" rows="4" placeholder="Sizes, pressure rating, quantity, delivery location..."></textarea></label>
 			</div>
-			<button type="submit" class="vzo-enq-submit">Send Enquiry</button>
+			<button type="submit" class="button vzo-enq-submit">Send Enquiry</button>
 		</form>
 	</div>
 	<?php
@@ -369,98 +369,77 @@ add_shortcode( 'vzo_enquiry', function () {
 add_action( 'wp_head', function () {
 	?>
 	<style id="vzo-custom-css">
-		/* Fixed nav bar: solid background once pinned. */
-		.scheme_dark .sc_layouts_row_fixed_on,
-		.scheme_dark.sc_layouts_row_fixed_on { background-color: #070E26 !important; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
-		.sc_layouts_row_fixed_on { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+		/* Fixed nav bar: keep the scheme background once pinned. */
+		.scheme_dark .sc_layouts_row_fixed_on, .scheme_dark.sc_layouts_row_fixed_on { background-color: var(--theme-color-alter_bg_color, #070E26) !important; }
 
 		/* Footer credit: smaller. */
-		.vzo-credit { display: inline-block; font-size: 11px; opacity: .75; margin-left: 4px; }
-		.vzo-credit a { font-size: inherit; }
+		.vzo-credit { font-size: 0.75em; opacity: .8; }
 
 		/* No likes / views counters. */
 		.post_meta_likes, .post_meta_views, .post_counters_likes, .post_counters_views { display: none !important; }
 
-		/* Cart and wishlist UI removed (enquiry list replaces it). */
+		/* Cart, wishlist, prices hidden (enquiry list replaces the cart). */
 		.sc_layouts_cart, .post_featured .icons .shop_cart, .tinv-wraper, .tinvwl_add_to_wishlist_button,
 		.woocommerce .product .price, .single_add_to_cart_button { display: none !important; }
 
-		/* Map: whole map is a link to Bajaj Engineering Works on Google Maps. */
+		/* Map overlay link. */
 		.sc_googlemap_wrap { position: relative; }
 		.vzo-map-link { position: absolute; inset: 0; z-index: 5; display: block; }
-		.vzo-map-link span { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); background: #DF3C2A; color: #fff; padding: 10px 18px; border-radius: 4px; font-size: 14px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
 
-		/* Product cards: boxed display. */
-		ul.products li.product .post_item { background: #fff; border: 1px solid #E4E7EF; border-radius: 8px; overflow: hidden; height: 100%; display: flex; flex-direction: column; transition: box-shadow .25s, transform .25s; }
-		ul.products li.product .post_item:hover { box-shadow: 0 10px 28px rgba(7,14,38,.12); transform: translateY(-3px); }
-		ul.products li.product .post_featured { background: #F6F7FA; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; margin: 0 !important; }
-		ul.products li.product .post_featured > a { display: block; width: 100%; height: 100%; }
-		ul.products li.product .post_featured img { width: 100%; height: 100%; object-fit: contain; padding: 14px; box-sizing: border-box; }
-		ul.products li.product .post_data { padding: 16px 18px 18px; flex: 1; display: flex; }
+		/* Product cards: boxed, theme colours. */
+		ul.products li.product .post_item { border: 1px solid var(--theme-color-bd_color); background: var(--theme-color-bg_color); height: 100%; display: flex; flex-direction: column; }
+		ul.products li.product .post_featured { background: var(--theme-color-alter_bg_color); margin-bottom: 0 !important; }
+		ul.products li.product .post_data { padding: 1.2em; flex: 1; display: flex; }
 		ul.products li.product .post_data_inner { display: flex; flex-direction: column; width: 100%; }
-		ul.products li.product .woocommerce-loop-product__title { font-size: 17px !important; line-height: 1.35 !important; margin: 0 0 14px !important; }
-		ul.products li.product .vzo-enq-actions-loop { margin-top: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+		ul.products li.product .vzo-enq-actions-loop { margin-top: auto; padding-top: 0.8em; display: flex; flex-direction: column; align-items: flex-start; gap: 0.6em; }
+		ul.products li.product .vzo-enq-actions-loop .vzo-enq-view { background: none !important; border: 0 !important; padding: 0 !important; color: var(--theme-color-text_link) !important; text-transform: none; letter-spacing: 0; }
 
-		/* Enquiry buttons. */
-		.vzo-enq-add, .vzo-enq-view, .vzo-enq-submit { display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; font-size: 14px; line-height: 1.2; border-radius: 4px; cursor: pointer; text-decoration: none; border: 1px solid #DF3C2A; transition: background .2s, color .2s; }
-		.vzo-enq-add, .vzo-enq-submit { background: #DF3C2A; color: #fff !important; }
-		.vzo-enq-add:hover, .vzo-enq-submit:hover { background: #b92f20; border-color: #b92f20; }
-		.vzo-enq-add.is-added { background: #17204E; border-color: #17204E; }
-		.vzo-enq-view { background: transparent; color: #17204E !important; border-color: #C9CEDC; }
-		.vzo-enq-view:hover { border-color: #17204E; }
-		.vzo-enq-actions-loop .vzo-enq-add, .vzo-enq-actions-loop .vzo-enq-view { flex: 1 1 120px; }
-		.vzo-enq-actions-single { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin: 20px 0; }
-		.vzo-enq-qty-label { display: flex; flex-direction: column; font-size: 13px; gap: 4px; }
-		.vzo-enq-qty { width: 90px; padding: 8px 10px; }
+		/* Single product. */
+		.vzo-enq-actions-single { display: flex; gap: 1em; align-items: flex-end; flex-wrap: wrap; margin: 1.5em 0; }
+		.vzo-enq-qty-label { display: flex; flex-direction: column; gap: 0.3em; }
+		.vzo-enq-qty { width: 6em; }
+		.vzo-specs { margin: 1.5em 0; }
+		.vzo-specs th { width: 38%; }
 
-		/* Floating enquiry badge. */
-		.vzo-enq-badge { position: fixed; left: 16px; bottom: 16px; z-index: 99990; background: #17204E; color: #fff !important; padding: 10px 16px; border-radius: 30px; font-size: 14px; box-shadow: 0 6px 18px rgba(0,0,0,.25); display: none; text-decoration: none; }
-		.vzo-enq-badge.is-visible { display: inline-flex; gap: 8px; align-items: center; }
-		.vzo-enq-badge b { background: #DF3C2A; border-radius: 20px; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
-		.vzo-enq-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #17204E; color: #fff; padding: 12px 20px; border-radius: 6px; z-index: 99999; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s; max-width: calc(100% - 32px); text-align: center; }
+		/* Floating enquiry badge + toast (theme colours, square corners). */
+		.vzo-enq-badge { position: fixed; left: 16px; bottom: 16px; z-index: 99990; background: var(--theme-color-text_dark); color: var(--theme-color-bg_color) !important; padding: 0.7em 1.1em; display: none; }
+		.vzo-enq-badge.is-visible { display: inline-flex; gap: 0.5em; align-items: center; }
+		.vzo-enq-badge b { background: var(--theme-color-text_link); min-width: 1.6em; text-align: center; padding: 0 0.3em; }
+		.vzo-enq-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--theme-color-text_dark); color: var(--theme-color-bg_color); padding: 0.8em 1.3em; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity .25s; max-width: calc(100% - 32px); text-align: center; }
 		.vzo-enq-toast.is-on { opacity: 1; pointer-events: auto; }
-		.vzo-enq-toast a { color: #fff; text-decoration: underline; margin-left: 6px; }
+		.vzo-enq-toast a { color: inherit; text-decoration: underline; margin-left: 0.4em; }
 
-		/* Specs table. */
-		.vzo-specs { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 15px; }
-		.vzo-specs th, .vzo-specs td { border: 1px solid #E4E7EF; padding: 10px 12px; text-align: left; vertical-align: top; }
-		.vzo-specs th { background: #F6F7FA; width: 38%; font-weight: 600; }
-
-		/* Archive filters. */
-		.vzo-filters { margin: 0 0 24px; display: flex; flex-direction: column; gap: 10px; clear: both; }
-		.vzo-filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-		.vzo-filter-label { font-weight: 600; min-width: 95px; }
-		.vzo-filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-		.vzo-pill { padding: 6px 14px; border: 1px solid #C9CEDC; border-radius: 30px; font-size: 14px; line-height: 1.3; color: #17204E; text-decoration: none; background: #fff; }
-		.vzo-pill:hover { border-color: #17204E; }
-		.vzo-pill.is-active { background: #17204E; border-color: #17204E; color: #fff; }
+		/* Archive filters: theme-style tag buttons. */
+		.vzo-filters { margin: 0 0 2em; display: flex; flex-direction: column; gap: 0.8em; clear: both; }
+		.vzo-filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5em; }
+		.vzo-filter-label { color: var(--theme-color-text_dark); min-width: 7em; }
+		.vzo-filter-pills { display: flex; flex-wrap: wrap; gap: 0.4em; }
+		.vzo-pill { padding: 0.45em 1em; border: 1px solid var(--theme-color-bd_color); color: var(--theme-color-text); }
+		.vzo-pill:hover { border-color: var(--theme-color-text_dark); color: var(--theme-color-text_dark); }
+		.vzo-pill.is-active { background: var(--theme-color-text_dark); border-color: var(--theme-color-text_dark); color: var(--theme-color-bg_color); }
 
 		/* Enquiry page. */
 		.vzo-enquiry { max-width: 900px; margin: 0 auto; }
-		.vzo-enq-notice { padding: 14px 18px; border-radius: 6px; margin-bottom: 20px; }
-		.vzo-enq-notice.is-ok { background: #E8F6EC; color: #1E6B34; }
-		.vzo-enq-notice.is-err { background: #FDECEA; color: #8A1C12; }
-		.vzo-enq-table { width: 100%; border-collapse: collapse; margin-bottom: 28px; }
-		.vzo-enq-table th, .vzo-enq-table td { border-bottom: 1px solid #E4E7EF; padding: 10px 8px; text-align: left; vertical-align: middle; }
-		.vzo-enq-table img { width: 56px; height: 56px; object-fit: contain; background: #F6F7FA; border-radius: 4px; }
-		.vzo-enq-table input { width: 100%; max-width: 110px; padding: 6px 8px; }
-		.vzo-enq-table .vzo-enq-size { max-width: 160px; }
-		.vzo-enq-remove { background: none; border: 0; color: #DF3C2A; cursor: pointer; font-size: 20px; line-height: 1; padding: 4px 8px; }
-		.vzo-enq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; margin-bottom: 18px; }
-		.vzo-enq-grid label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+		.vzo-enq-notice { padding: 1em 1.2em; margin-bottom: 1.5em; border-left: 3px solid var(--theme-color-text_link); background: var(--theme-color-alter_bg_color); color: var(--theme-color-text_dark); }
+		.vzo-enq-table { width: 100%; margin-bottom: 2em; }
+		.vzo-enq-table td { vertical-align: middle; }
+		.vzo-enq-table img { width: 56px; height: 56px; object-fit: contain; background: var(--theme-color-alter_bg_color); }
+		.vzo-enq-table input { max-width: 120px; }
+		.vzo-enq-table .vzo-enq-size { max-width: 170px; }
+		.vzo-enq-remove { background: none !important; border: 0 !important; color: var(--theme-color-text_link) !important; cursor: pointer; font-size: 1.4em; line-height: 1; padding: 0.2em 0.5em !important; }
+		.vzo-enq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em 1.5em; margin-bottom: 1.5em; }
+		.vzo-enq-grid label { display: flex; flex-direction: column; gap: 0.4em; }
 		.vzo-enq-grid .vzo-full { grid-column: 1 / -1; }
 		.vzo-hp { position: absolute !important; left: -9999px !important; height: 1px; overflow: hidden; }
 		@media (max-width: 767px) {
 			.vzo-enq-grid { grid-template-columns: 1fr; }
 			.vzo-enq-table thead { display: none; }
-			.vzo-enq-table tr { display: grid; grid-template-columns: 64px 1fr auto; gap: 6px 10px; padding: 10px 0; border-bottom: 1px solid #E4E7EF; }
+			.vzo-enq-table tr { display: grid; grid-template-columns: 64px 1fr auto; gap: 6px 10px; padding: 10px 0; }
 			.vzo-enq-table td { border: 0; padding: 0; }
 			.vzo-enq-table td.vzo-c-img { grid-row: span 3; }
 			.vzo-enq-table td.vzo-c-rm { grid-column: 3; grid-row: 1; }
 			.vzo-enq-table td.vzo-c-size, .vzo-enq-table td.vzo-c-qty { grid-column: 2 / span 2; }
 			.vzo-filter-label { min-width: 0; width: 100%; }
-			.vzo-map-link span { font-size: 13px; padding: 8px 14px; }
-			ul.products li.product .woocommerce-loop-product__title { font-size: 15px !important; }
 		}
 	</style>
 	<?php
@@ -540,7 +519,7 @@ add_action( 'wp_footer', function () {
 				var a = document.createElement('a');
 				a.className = 'vzo-map-link'; a.href = MAP_URL; a.target = '_blank'; a.rel = 'noopener';
 				a.setAttribute('aria-label', 'Open Bajaj Engineering Works location in Google Maps');
-				a.innerHTML = '<span>Open in Google Maps</span>';
+				
 				m.appendChild(a);
 			});
 		}
