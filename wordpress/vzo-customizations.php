@@ -147,18 +147,18 @@ function vzo_product_specs( $product ) {
 		'application'   => 'Application',
 		'certification' => 'Certification',
 	);
-	$code   = trim( wp_strip_all_tags( $product->get_short_description() ) );
-	$html   = '<table class="vzo-specs"><tbody>';
+	$code = trim( wp_strip_all_tags( $product->get_short_description() ) );
+	$html = '<div class="vzo-specs"><div class="vzo-specs-title">Specifications</div>';
 	if ( $code && preg_match( '/^VZO[\w\-]*$/i', $code ) ) {
-		$html .= '<tr><th>Product Code</th><td>' . esc_html( $code ) . '</td></tr>';
+		$html .= '<div class="vzo-spec"><span class="vzo-spec-label">Product Code</span><span class="vzo-spec-value vzo-spec-code">' . esc_html( $code ) . '</span></div>';
 	}
 	foreach ( $labels as $k => $label ) {
 		if ( $rows[ $k ] ) {
-			$html .= '<tr><th>' . esc_html( $label ) . '</th><td>' . implode( ', ', $rows[ $k ] ) . '</td></tr>';
+			$html .= '<div class="vzo-spec"><span class="vzo-spec-label">' . esc_html( $label ) . '</span><span class="vzo-spec-value">' . implode( '<span class="vzo-spec-sep">, </span>', $rows[ $k ] ) . '</span></div>';
 		}
 	}
-	$html .= '<tr><th>Sizes &amp; Dimensions</th><td>Available on request. Add this product to your enquiry, or <a href="' . esc_url( home_url( '/wp-content/uploads/2025/02/CATELOGUE-PDF.pdf' ) ) . '" target="_blank" rel="noopener">download our catalogue</a>.</td></tr>';
-	$html .= '</tbody></table>';
+	$html .= '</div>';
+	$html .= '<div class="vzo-specs-note"><span class="vzo-specs-note-title">Sizes &amp; Dimensions</span><span class="vzo-specs-note-text">Available in multiple sizes on request. Add this product to your enquiry, or <a href="' . esc_url( home_url( '/wp-content/uploads/2025/02/CATELOGUE-PDF.pdf' ) ) . '" target="_blank" rel="noopener">download our catalogue</a> for full dimensions.</span></div>';
 	return $html;
 }
 
@@ -404,8 +404,19 @@ add_action( 'wp_head', function () {
 		.vzo-enq-actions-single { display: flex; gap: 1em; align-items: flex-end; flex-wrap: wrap; margin: 1.5em 0; }
 		.vzo-enq-qty-label { display: flex; flex-direction: column; gap: 0.3em; }
 		.vzo-enq-qty { width: 6em; }
-		.vzo-specs { margin: 1.5em 0; }
-		.vzo-specs th { width: 38%; }
+		.vzo-specs { margin: 1.6em 0 1.2em; border-top: 1px solid var(--theme-color-bd_color); }
+		.vzo-specs-title { font-size: 0.75em; letter-spacing: 0.15em; text-transform: uppercase; color: var(--theme-color-text_dark); padding: 1.1em 0 0.6em; }
+		.vzo-spec { display: grid; grid-template-columns: minmax(8em, 38%) 1fr; gap: 1em; align-items: baseline; padding: 0.8em 0; border-bottom: 1px solid var(--theme-color-bd_color); }
+		.vzo-spec-label { font-size: 0.8em; letter-spacing: 0.08em; text-transform: uppercase; color: var(--theme-color-text_light); }
+		.vzo-spec-value { color: var(--theme-color-text_dark); }
+		.vzo-spec-value a { color: inherit; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .3s, color .3s; }
+		.vzo-spec-value a:hover { color: var(--theme-color-text_link); background-size: 100% 1px; }
+		.vzo-spec-code { font-weight: 600; letter-spacing: 0.04em; }
+		.vzo-specs-note { display: flex; flex-direction: column; gap: 0.3em; padding: 1em 1.2em; border-left: 3px solid var(--theme-color-text_link); background: var(--theme-color-alter_bg_color); margin-bottom: 0.5em; }
+		.vzo-specs-note-title { font-size: 0.75em; letter-spacing: 0.15em; text-transform: uppercase; color: var(--theme-color-text_dark); }
+		.vzo-specs-note-text { font-size: 0.95em; line-height: 1.6; }
+		.single-product div.product .product_meta { display: none; }
+		.vzo-specs-note a { color: var(--theme-color-text_link); }
 
 		/* Floating enquiry badge + toast (theme colours, square corners). */
 		.vzo-enq-badge { position: fixed; left: 16px; bottom: 16px; z-index: 99990; background: var(--theme-color-text_dark); color: var(--theme-color-bg_color) !important; padding: 0.7em 1.1em; display: none; }

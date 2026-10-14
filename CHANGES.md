@@ -64,3 +64,4 @@ A full backup was taken before any change was made:
 - Removed the empty "Cart" and "Tags" widgets from the shop sidebar, and the price/rating sort options.
 - Footer "Subscribe" column was empty because the Mailchimp form was never connected (API key missing). Replaced it with "Get in Touch" and a Contact Us button in all footers.
 - Every page was rendered offline in Chromium at 1440px and 390px and checked visually; the Add to Enquiry → Enquiry page flow was tested in the browser.
+- Product page specifications redesigned: light list with small uppercase labels and dividers (replacing the dark table), a highlighted "Sizes & Dimensions" note, and the duplicate Categories / Product ID lines hidden.
